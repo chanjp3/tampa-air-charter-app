@@ -1,7 +1,7 @@
 {
-  "name": "TAC Members — Tampa Air Charter",
+  "name": "TAC Members \u2014 Tampa Air Charter",
   "short_name": "TAC Members",
-  "description": "Request charter quotes, receive them in-app, and track your jet card hours.",
+  "description": "Tampa Air Charter members: request private charter quotes, receive and accept them in-app, and track your jet card hours in real time. Flights operated under FAA Part 135.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -9,8 +9,32 @@
   "background_color": "#0b1626",
   "theme_color": "#0b1626",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ]
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": [
+    "travel",
+    "business"
+  ],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "prefer_related_applications": false
 }
