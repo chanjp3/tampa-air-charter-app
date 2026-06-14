@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TAC Desk — Charter Operations</title>
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b1626">
+<link rel="apple-touch-icon" href="../icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TAC Desk">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Albert+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e8b96f;--night:#0b1626;--panel:#101e33;--ink:#13222f;--slate:#5d7083;--mist:#9db0c2;--snow:#f2f6fa;--wsa:#1ca5e0;--wsa-bright:#46c3f2;--ok:#3fbf7f;--line:rgba(242,246,250,.12);
+--serif:"Instrument Serif",serif;--sans:"Albert Sans",sans-serif;--mono:"Spline Sans Mono",monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:radial-gradient(120% 70% at 85% -5%,rgba(28,165,224,.10),transparent 55%),radial-gradient(120% 80% at 5% 105%,rgba(232,185,111,.10),transparent 50%),var(--night);color:var(--snow);min-height:100svh;font-size:15.5px;line-height:1.5;padding-bottom:env(safe-area-inset-bottom)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+a{color:var(--wsa-bright);text-decoration:none}
+.mono{font-family:var(--mono)}
+h1,h2{font-family:var(--serif);font-weight:400}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:13px 18px;border-radius:4px;border:0;cursor:pointer;transition:all .2s;background:var(--wsa);color:#fff}
+.btn:hover{background:var(--wsa-bright)}.btn[disabled]{opacity:.5}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--snow)}
+.btn.full{width:100%}
+input,textarea,select{width:100%;background:rgba(242,246,250,.05);border:1px solid var(--line);border-radius:4px;padding:12px;color:var(--snow);font-family:var(--sans);font-size:15.5px}
+input:focus,textarea:focus{outline:none;border-color:var(--wsa)}
+label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);margin:12px 0 5px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.card-head{padding:11px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mist);background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(28,165,224,.06) 6px 7px);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card-head b{color:var(--wsa-bright);font-weight:600}
+.hidden{display:none!important}
+.pill{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:20px;border:1px solid var(--line);white-space:nowrap}
+.st-pending{color:var(--gold);border-color:rgba(232,185,111,.5)}.st-quoted{color:var(--wsa-bright);border-color:rgba(70,195,242,.5)}.st-accepted{color:var(--ok);border-color:rgba(63,191,127,.5)}.st-booked{color:var(--gold)}.st-closed{color:var(--slate)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--wsa);border-radius:6px;padding:12px 18px;font-family:var(--mono);font-size:12px;z-index:99;max-width:90vw;text-align:center}
+.top{position:sticky;top:0;z-index:50;background:rgba(11,22,38,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.top .brand{display:flex;align-items:center;gap:10px}.top img{height:28px;border-radius:20%}
+.top .brand b{font-family:var(--mono);font-size:12px;letter-spacing:.16em}
+.top .who{font-family:var(--mono);font-size:10px;color:var(--mist);text-align:right}
+.top .who button{background:none;border:0;color:var(--wsa-bright);font:inherit;cursor:pointer;padding:0}
+.err{font-family:var(--mono);font-size:12px;color:#e88f6f;margin-top:8px;min-height:15px}
+.devnote{font-family:var(--mono);font-size:11px;color:var(--gold);margin-top:8px}
+
+#loginView{min-height:100svh;display:flex;align-items:center}
+#loginView .inner{width:100%;padding:36px 0;max-width:380px;margin:0 auto}
+#loginView img{height:60px;margin:0 auto 22px;display:block;border-radius:18%}
+#loginView h1{font-size:34px;text-align:center}#loginView h1 em{font-style:italic;color:var(--wsa-bright)}
+#loginView .sub{text-align:center;color:var(--mist);font-size:14px;margin:4px 0 26px}
+.login-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:22px}
+
+main{padding:18px 0 40px}
+.banner{background:rgba(232,185,111,.1);border:1px solid rgba(232,185,111,.4);border-radius:8px;padding:14px 16px;margin-bottom:14px;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.banner .mono{color:var(--gold)}
+.req{border-bottom:1px solid var(--line);padding:16px}
+.req:last-child{border-bottom:0}
+.req-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.req-route{font-family:var(--mono);font-size:16px;font-weight:600;letter-spacing:.03em}
+.req-sub{font-family:var(--mono);font-size:11.5px;color:var(--mist);margin-top:5px;line-height:1.7}
+.req-sub a{color:var(--wsa-bright)}
+.req-notes{font-size:13.5px;color:var(--mist);margin-top:8px;padding:8px 10px;background:rgba(242,246,250,.04);border-radius:5px}
+.q-form{margin-top:12px;background:rgba(28,165,224,.06);border:1px solid rgba(28,165,224,.3);border-radius:7px;padding:14px}
+.q-form .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.prior-quote{margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--mist);border-left:2px solid var(--wsa);padding:6px 0 6px 10px}
+.empty{padding:28px 16px;text-align:center;color:var(--mist);font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+.statusbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.statusbar select{width:auto;padding:7px 10px;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView">
+  <div class="wrap inner">
+    <img src="../icons/icon-192.png" alt="TAC">
+    <h1>Desk <em>console.</em></h1>
+    <p class="sub">Staff sign-in. Requests ring here.</p>
+    <div class="login-card">
+      <div id="stepEmail">
+        <label for="email">Work email</label>
+        <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@willsmithaviation.com">
+        <div style="margin-top:14px"><button class="btn full" id="sendBtn">Email me a code</button></div>
+      </div>
+      <div id="stepCode" class="hidden">
+        <label for="code">6-digit code — sent to <span id="sentTo" class="mono"></span></label>
+        <input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••">
+        <div style="margin-top:14px"><button class="btn full" id="verifyBtn">Sign in</button></div>
+        <div style="margin-top:9px"><button class="btn ghost full" id="backBtn">Different email</button></div>
+        <div class="devnote hidden" id="devNote"></div>
+      </div>
+      <div class="err" id="loginErr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appView" class="hidden">
+  <div class="top"><div class="wrap">
+    <div class="brand"><img src="../icons/icon-192.png" alt="TAC"><b>TAC DESK</b></div>
+    <div class="who"><span id="whoEmail"></span><br><button id="logoutBtn">Sign out</button></div>
+  </div></div>
+  <main class="wrap">
+    <div class="banner" id="pushBanner">
+      <span>🔔 Turn on alerts to get notified the second a client requests a quote.</span>
+      <button class="btn" id="enablePush">Enable notifications</button>
+    </div>
+    <div class="card">
+      <div class="card-head"><span>Request Inbox</span><button class="btn ghost" style="padding:6px 12px" id="refreshBtn">Refresh</button></div>
+      <div id="inbox"></div>
+    </div>
+    <p style="text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--slate);text-transform:uppercase">
+      <button class="btn ghost" id="testPush" style="font-size:10px;padding:8px 14px">Send test notification</button>
+    </p>
+  </main>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const api=(body)=>fetch('/api/staff',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),credentials:'same-origin'}).then(r=>r.json());
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pretty=s=>{try{return new Date(s.replace(' ','T')+'Z').toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}catch{return s}};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);}
+const urlB64=(s)=>{const pad='='.repeat((4-s.length%4)%4);const b=atob((s+pad).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)));};
+
+/* login */
+$('#sendBtn').onclick=async()=>{
+  const email=$('#email').value.trim();$('#loginErr').textContent='';
+  if(!email)return $('#loginErr').textContent='Enter your email.';
+  $('#sendBtn').disabled=true;
+  const r=await api({action:'send',email}).catch(()=>({ok:false,error:'network error'}));
+  $('#sendBtn').disabled=false;
+  if(!r.ok)return $('#loginErr').textContent=r.error||'Could not send.';
+  $('#sentTo').textContent=email;$('#stepEmail').classList.add('hidden');$('#stepCode').classList.remove('hidden');
+  if(r.dev_code){$('#devNote').classList.remove('hidden');$('#devNote').textContent='DEV — code: '+r.dev_code;}
+  $('#code').focus();
+};
+$('#backBtn').onclick=()=>{$('#stepCode').classList.add('hidden');$('#stepEmail').classList.remove('hidden');$('#loginErr').textContent='';$('#devNote').classList.add('hidden');};
+$('#verifyBtn').onclick=verify;$('#code').addEventListener('keydown',e=>{if(e.key==='Enter')verify();});
+async function verify(){
+  const email=$('#email').value.trim(),code=$('#code').value.trim();$('#loginErr').textContent='';$('#verifyBtn').disabled=true;
+  const r=await api({action:'verify',email,code}).catch(()=>({ok:false,error:'network error'}));
+  $('#verifyBtn').disabled=false;
+  if(!r.ok)return $('#loginErr').textContent=r.error||'Could not sign in.';
+  boot();
+}
+$('#logoutBtn').onclick=async()=>{await api({action:'logout'});location.reload();};
+
+/* dashboard */
+async function boot(){
+  const d=await api({action:'inbox'}).catch(()=>null);
+  if(!d||!d.ok){$('#loginView').classList.remove('hidden');$('#appView').classList.add('hidden');return;}
+  $('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden');
+  $('#whoEmail').textContent=d.me.name||d.me.email;
+  renderInbox(d.requests);
+  refreshPushBanner();
+}
+function renderInbox(list){
+  if(!list||!list.length){$('#inbox').innerHTML='<div class="empty">No requests yet. They\'ll appear here — and ring your phone.</div>';return;}
+  $('#inbox').innerHTML=list.map(r=>{
+    const prior=(r.quotes||[]).map(q=>`<div class="prior-quote">Quoted ${esc(q.amount)} · ${pretty(q.created_at)}</div>`).join('');
+    const canQuote=r.status==='pending'||r.status==='quoted';
+    return `<div class="req">
+      <div class="req-top">
+        <div>
+          <div class="req-route">${esc(r.from_ap)} → ${esc(r.to_ap)}</div>
+          <div class="req-sub">
+            ${esc(r.client_name||r.client_email)} · <a href="mailto:${esc(r.client_email)}">${esc(r.client_email)}</a>${r.client_phone?` · <a href="tel:${esc(r.client_phone)}">${esc(r.client_phone)}</a>`:''}<br>
+            ${esc(r.depart_date||'date TBD')}${r.return_date?' → '+esc(r.return_date):''} · ${esc(r.pax||'—')} pax · ${pretty(r.created_at)}
+          </div>
+          ${r.notes?`<div class="req-notes">${esc(r.notes)}</div>`:''}
+        </div>
+        <span class="pill st-${r.status}">${r.status}</span>
+      </div>
+      ${prior}
+      ${canQuote?`<div class="q-form">
+        <div class="row2">
+          <div><label>Amount</label><input id="amt-${r.id}" placeholder="$14,800 all-in"></div>
+          <div><label>Valid until</label><input id="vu-${r.id}" placeholder="06/20"></div>
+        </div>
+        <label>Message to client</label><input id="msg-${r.id}" placeholder="Citation Mustang · 4 seats · all-in">
+        <label>Booking link (Stripe / contract / pay)</label><input id="book-${r.id}" inputmode="url" placeholder="https://buy.stripe.com/...">
+        <div style="margin-top:12px"><button class="btn full" data-quote="${r.id}">Send quote to client</button></div>
+      </div>`:''}
+      <div class="statusbar">
+        <select id="st-${r.id}">${['pending','quoted','accepted','booked','closed'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select>
+        <button class="btn ghost" data-status="${r.id}" style="padding:7px 12px">Set status</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('[data-quote]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.quote;b.disabled=true;
+    const r=await api({action:'quote',request_id:id,amount:$('#amt-'+id).value,message:$('#msg-'+id).value,valid_until:$('#vu-'+id).value,booking_url:$('#book-'+id).value}).catch(()=>({ok:false}));
+    b.disabled=false;
+    if(r.ok){toast('✓ Quote sent — client notified.');boot();}else toast(r.error||'Failed.');
+  });
+  document.querySelectorAll('[data-status]').forEach(b=>b.onclick=async()=>{
+    const id=b.dataset.status;const r=await api({action:'status',request_id:id,status:$('#st-'+id).value});
+    if(r.ok){toast('Status updated.');boot();}else toast(r.error||'Failed.');
+  });
+}
+$('#refreshBtn').onclick=boot;
+
+/* push */
+async function refreshPushBanner(){
+  const banner=$('#pushBanner');
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)){banner.innerHTML='<span class="mono">This browser doesn\'t support push. Install the app to your home screen first.</span>';return;}
+  const reg=await navigator.serviceWorker.getRegistration();
+  const sub=reg&&await reg.pushManager.getSubscription();
+  if(sub&&Notification.permission==='granted')banner.classList.add('hidden');else banner.classList.remove('hidden');
+}
+$('#enablePush').onclick=async()=>{
+  try{
+    const cfg=await api({action:'config'});
+    if(!cfg.vapidPublic){toast('Push not configured (VAPID keys missing).');return;}
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){toast('Notifications blocked — enable them in settings.');return;}
+    const reg=await navigator.serviceWorker.ready;
+    const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlB64(cfg.vapidPublic)});
+    const j=sub.toJSON();
+    const r=await api({action:'subscribe',sub:{endpoint:j.endpoint,keys:j.keys}});
+    if(r.ok){toast('🔔 Alerts on.');refreshPushBanner();}else toast(r.error||'Could not subscribe.');
+  }catch(e){toast('Could not enable: '+e.message);}
+};
+$('#testPush').onclick=async()=>{const r=await api({action:'test_push'}).catch(()=>({ok:false}));toast(r.ok?`Test sent to ${r.sent} device(s).`:'Failed — enable alerts first.');};
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+boot();
+</script>
+</body>
+</html>

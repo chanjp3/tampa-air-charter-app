@@ -1,5 +1,6 @@
 // POST /api/request — submit a quote request
 import { json, bad, currentClient, sendEmail } from './_utils.js';
+import { pushAllStaff } from './_push.js';
 
 export async function onRequestPost(context) {
   const client = await currentClient(context);
@@ -23,6 +24,14 @@ export async function onRequestPost(context) {
     String(b.pax || '').slice(0, 12),
     String(b.notes || '').slice(0, 600)
   ).run();
+
+  // push every signed-in staff device
+  context.waitUntil(pushAllStaff(env, {
+    title: 'New quote request',
+    body: `${from_ap} → ${to_ap} · ${client.name || client.email}`,
+    url: '/staff/',
+    tag: 'req-' + id
+  }));
 
   // notify the desk (best-effort)
   if (env.DESK_EMAIL) {

@@ -72,3 +72,20 @@ export async function sendEmail(env, to, subject, text) {
     return { sent: false, reason: 'error' };
   }
 }
+
+export async function currentStaff(context) {
+  const token = getCookie(context.request, 'tac_staff');
+  if (!token) return null;
+  const row = await context.env.DB.prepare(
+    `SELECT s.* FROM staff_sessions ss JOIN staff s ON s.id = ss.staff_id
+     WHERE ss.token = ?1 AND ss.expires_at > datetime('now')`
+  ).bind(token).first();
+  return row || null;
+}
+export function staffCookie(token, days = 30) {
+  return `tac_staff=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${days * 86400}`;
+}
+export function isAllowedStaff(env, email) {
+  const list = (env.STAFF_EMAILS || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+  return list.includes(String(email || '').toLowerCase());
+}
